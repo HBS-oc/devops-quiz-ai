@@ -31,3 +31,11 @@ jobs:
       - name: Push image
         if: github.event_name == 'push'
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/devops-quiz-ai
+  deploy:
+    needs: build-test-push
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Render deploy
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_URL }}
